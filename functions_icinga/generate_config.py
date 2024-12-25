@@ -1,20 +1,19 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 
-def generate_config():
-    host_name = entry_host_name.get()
-    ip_address = entry_ip.get()
-    username = entry_user.get()
-    password = entry_password.get()
-    host_type = combo_type.get()
-    os_type = combo_os.get()
+def generate_config(data):
+    host_name = data.entry_host_name.get()
+    ip_address = data.entry_ip.get()
+    username = data.entry_user.get()
+    password = data.entry_password.get()
+    host_type = data.combo_type.get()
+    os_type = data.combo_os.get()
 
     if not host_name or not ip_address or not username or not password or not host_type or not os_type:
         messagebox.showerror("Error", "Todos los campos son obligatorios.")
         return
 
     config_template = f"""
-object Host "{host_name}" {{
+    object Host "{host_name}" {{
 
     import "generic-host"
     import "notification_template_ciberseguridad"
@@ -114,52 +113,8 @@ object Host "{host_name}" {{
 """
 
     try:
-        with open(f"{host_name}_config.conf", "w") as file:
+        with open(f"CONF-ICINGA/{host_name}.conf", "w") as file:
             file.write(config_template)
         messagebox.showinfo("Éxito", f"Configuración generada exitosamente en {host_name}_config.conf")
     except Exception as e:
         messagebox.showerror("Error", f"Ocurrió un error al generar el archivo: {e}")
-
-# Crear ventana principal
-root = tk.Tk()
-root.title("Generador de Configuración de Host")
-
-# Crear y ubicar widgets
-frame = ttk.Frame(root, padding="10")
-frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-
-# Nombre del host
-ttk.Label(frame, text="Nombre del Host:").grid(row=0, column=0, sticky=tk.W)
-entry_host_name = ttk.Entry(frame, width=25)
-entry_host_name.grid(row=0, column=1, pady=5)
-
-# Dirección IP
-ttk.Label(frame, text="Dirección IP:").grid(row=1, column=0, sticky=tk.W)
-entry_ip = ttk.Entry(frame, width=25)
-entry_ip.grid(row=1, column=1, pady=5)
-
-# Usuario
-ttk.Label(frame, text="Usuario:").grid(row=2, column=0, sticky=tk.W)
-entry_user = ttk.Entry(frame, width=25)
-entry_user.grid(row=2, column=1, pady=5)
-
-# Contraseña
-ttk.Label(frame, text="Contraseña:").grid(row=3, column=0, sticky=tk.W)
-entry_password = ttk.Entry(frame, width=25, show="*")
-entry_password.grid(row=3, column=1, pady=5)
-
-# Tipo
-ttk.Label(frame, text="Tipo:").grid(row=4, column=0, sticky=tk.W)
-combo_type = ttk.Combobox(frame, values=["server"], state="readonly", width=22)
-combo_type.grid(row=4, column=1, pady=5)
-
-# Sistema Operativo
-ttk.Label(frame, text="Sistema Operativo:").grid(row=5, column=0, sticky=tk.W)
-combo_os = ttk.Combobox(frame, values=["linux", "windows"], state="readonly", width=22)
-combo_os.grid(row=5, column=1, pady=5)
-
-# Botón para generar
-btn_generate = ttk.Button(frame, text="Generar Configuración", command=generate_config)
-btn_generate.grid(row=6, column=0, columnspan=2, pady=10)
-
-root.mainloop()
