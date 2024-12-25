@@ -13,7 +13,7 @@ def generate_config(data):
         return
 
     config_template = f"""
-    object Host "{host_name}" {{
+object Host "{host_name}" {{
 
     import "generic-host"
     import "notification_template_ciberseguridad"
